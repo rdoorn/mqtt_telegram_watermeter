@@ -25,8 +25,8 @@ func (h *Handler) mqttOut(client mqtt.Client, msg mqtt.Message) {
 	switch msg.Topic() {
 	case "watermeter/reading/current_value":
 
-		log.Printf("pl: %T %s", msg.Payload(), msg.Payload())
-		//h.statsd.Gauge(1.0, fmt.Sprintf("watermeter.current_value", fmt.Sprintf("%d", msg.Payload()))
+		log.Printf("watermeter.current_value=%s", msg.Payload())
+		h.statsd.Gauge(1.0, fmt.Sprintf("watermeter.current_value", fmt.Sprintf("%s", msg.Payload())))
 	}
 }
 
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Setup MQTT Sub
-	err := h.mqtt.Subscribe(mqttClientID, "watermeter/reading", 0, h.mqttOut)
+	err := h.mqtt.Subscribe(mqttClientID, "watermeter/reading/current_value", 0, h.mqttOut)
 	if err != nil {
 		panic(err)
 	}
