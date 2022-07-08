@@ -26,7 +26,10 @@ func (h *Handler) mqttOut(client mqtt.Client, msg mqtt.Message) {
 	case "watermeter/reading/current_value":
 
 		log.Printf("watermeter.current_value=%s", msg.Payload())
-		h.statsd.Gauge(1.0, fmt.Sprintf("watermeter.current_value", fmt.Sprintf("%s", msg.Payload())))
+		err := h.statsd.Gauge(1.0, fmt.Sprintf("watermeter.current_value", fmt.Sprintf("%s", msg.Payload())))
+		if err != nil {
+			log.Printf("err: %s", err)
+		}
 	}
 }
 
